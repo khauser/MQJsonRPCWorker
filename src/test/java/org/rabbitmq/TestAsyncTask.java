@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;
 import com.thetransactioncompany.jsonrpc2.util.NamedParamsRetriever;
 
-@JsonSerialize(using = TestAsyncTask.CreateImageAsyncTaskSerializer.class)
+@JsonSerialize(using = TestAsyncTask.TestAsyncTaskSerializer.class)
 public class TestAsyncTask extends MQAsyncTask {
     private static final Logger LOG = LoggerFactory.getLogger(TestAsyncTask.class);
 
@@ -64,7 +64,7 @@ public class TestAsyncTask extends MQAsyncTask {
         Thread.sleep(2000);
     }
 
-    public static class CreateImageAsyncTaskSerializer extends JsonSerializer<TestAsyncTask> {
+    public static class TestAsyncTaskSerializer extends JsonSerializer<TestAsyncTask> {
         @Override
         public void serialize(TestAsyncTask mqTask, JsonGenerator generator, SerializerProvider provider)
                 throws IOException {
