@@ -4,8 +4,11 @@ import java.util.concurrent.ExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.rabbitmq.exception.JsonConversionException;
+import org.rabbitmq.task.MQAsyncTask;
+import org.rabbitmq.task.MQAsyncTaskMapper;
+import org.rabbitmq.task.MQAsyncTaskProviderMapper;
+
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;

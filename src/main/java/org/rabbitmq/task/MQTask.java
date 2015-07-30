@@ -1,4 +1,4 @@
-package org.rabbitmq;
+package org.rabbitmq.task;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -6,10 +6,11 @@ import java.util.HashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.rabbitmq.MQWorker;
 import org.rabbitmq.exception.ErrorCode;
 import org.rabbitmq.exception.JsonConversionException;
 import org.rabbitmq.exception.MQConnectionException;
+
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;

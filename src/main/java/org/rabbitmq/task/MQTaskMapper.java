@@ -1,8 +1,8 @@
-package org.rabbitmq;
+package org.rabbitmq.task;
 
 import java.util.HashMap;
 
-import org.rabbitmq.MQTask;
+import org.rabbitmq.task.MQTask;
 
 public class MQTaskMapper extends HashMap<String, Class<? extends MQTask>> {
 

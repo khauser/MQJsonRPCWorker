@@ -1,4 +1,4 @@
-package org.rabbitmq;
+package org.rabbitmq.task;
 
 import java.util.HashMap;
 

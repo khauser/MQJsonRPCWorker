@@ -1,11 +1,12 @@
-package org.rabbitmq;
+package org.rabbitmq.task;
 
 import java.util.Arrays;
 
 import org.joda.time.DateTime;
-
+import org.rabbitmq.MQAsyncWorker;
 import org.rabbitmq.exception.JsonConversionException;
 import org.rabbitmq.utility.Link;
+
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;

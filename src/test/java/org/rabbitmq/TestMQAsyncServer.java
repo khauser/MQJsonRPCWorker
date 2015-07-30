@@ -1,6 +1,8 @@
 package org.rabbitmq;
 
 import org.rabbitmq.config.ServiceConfiguration;
+import org.rabbitmq.task.MQAsyncTaskMapper;
+import org.rabbitmq.task.MQAsyncTaskProviderMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

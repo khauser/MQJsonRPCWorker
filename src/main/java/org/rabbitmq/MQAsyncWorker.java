@@ -7,6 +7,7 @@ import java.util.Map;
 import org.rabbitmq.exception.ErrorCode;
 import org.rabbitmq.exception.JsonConversionException;
 import org.rabbitmq.exception.MQConnectionException;
+import org.rabbitmq.task.MQAsyncTask;
 import org.rabbitmq.utility.JsonConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
