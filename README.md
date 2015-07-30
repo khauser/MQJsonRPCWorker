@@ -2,7 +2,7 @@
 
 This project implements two rabbitmq approaches in an abstract manner to use it later on as a library:
 
-* "Work queue" for being able distribute time-consuming tasks among multiple workers [see here for more..](http://www.rabbitmq.com/tutorials/tutorial-two-java.html)
+* "Work queue" for being able to distribute time-consuming tasks among multiple workers [see here for more..](http://www.rabbitmq.com/tutorials/tutorial-two-java.html)
 
   ![RabbitMQ-Work queue](/images/rabbitmq-worker.png)
 * "RPC" for allowing client-server communication by an unique correlation id and one answer queue per client [see here for more..](http://www.rabbitmq.com/tutorials/tutorial-six-java.html)
