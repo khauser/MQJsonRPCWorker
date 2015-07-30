@@ -5,7 +5,7 @@ This project implements two rabbitmq approaches in an abstract manner to use it 
 * "Work queue" for being able distribute time-consuming tasks among multiple workers [see here for more..](http://www.rabbitmq.com/tutorials/tutorial-two-java.html)
 
   ![RabbitMQ-Work queue](/images/rabbitmq-worker.png)
-* "RPC" for allowing client-server communication over the queue by using answer queues per client and an unique correlation id [see here for more..](http://www.rabbitmq.com/tutorials/tutorial-six-java.html)
+* "RPC" for allowing client-server communication by an unique correlation id one answer queue per client [see here for more..](http://www.rabbitmq.com/tutorials/tutorial-six-java.html)
 
   ![RabbitMQ-RPC](/images/rabbitmq-rpc.png)
 
@@ -17,8 +17,8 @@ This project implements two rabbitmq approaches in an abstract manner to use it 
 ## Installation
 * Install the [Java Development Kit] (http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 * Install [RabbitMQ 3.5.4] (http://www.rabbitmq.com/download.html)
-* Run `gradlew clean build test` to just run the test implementation
-* use src/test/java as sample implementation of this library
+* Run `gradlew clean build test` to just build and run the test implementation
+* the code under src/test/java is a sample implementation of this library and is used by the test
 
 ## Upcoming
-* setup a maven repository to upload 
+* setup a maven repository to upload the library
