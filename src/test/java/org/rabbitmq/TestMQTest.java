@@ -71,6 +71,8 @@ public class TestMQTest {
         assertEquals(EXPECTED_GUID, taskJson.get("data").get("guid").textValue());
 
         assertEquals(EXPECTED_TYPE, taskJson.get("type").textValue());
+
+        //TODO: task is created, but now we could query for his results (asynchronous)
     }
 
     @Test
