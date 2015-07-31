@@ -2,14 +2,13 @@ package org.rabbitmq;
 
 import java.util.concurrent.ExecutorService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.rabbitmq.exception.JsonConversionException;
 import org.rabbitmq.task.MQAsyncTask;
 import org.rabbitmq.task.MQAsyncTaskMapper;
 import org.rabbitmq.task.MQAsyncTaskProviderMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Request;
@@ -34,8 +33,7 @@ public class TestMQAsyncWorker extends MQAsyncWorker {
     }
 
     @Override
-    public void initializeRequest(JSONRPC2Request request, NamedParamsRetriever np, BasicProperties props,
-            long tag) throws JSONRPC2Error,  JsonConversionException {
+    public void initializeRequest(JSONRPC2Request request, NamedParamsRetriever np) throws JSONRPC2Error,  JsonConversionException {
         Class<? extends MQAsyncTask> taskClass = taskMapper.get(request.getMethod());
         if (taskClass == null) {
             throw JSONRPC2Error.METHOD_NOT_FOUND;
@@ -43,7 +41,7 @@ public class TestMQAsyncWorker extends MQAsyncWorker {
         LOG.debug("Worker {} submitting {} as {}th task", this.getWorkerId(), taskClass.getSimpleName(),
                 this.getProcessed());
         MQAsyncTask task = providerMapper.getMQTask(taskClass.getName());
-        initializeTask(task, this, tag, props, request.getID());
+        initializeTask(task, this, request.getID());
         task.setUpTask(np);
         LOG.debug("Worker {} initialized task {}", this.getWorkerId(), task.getId());
         this.setTask(task);

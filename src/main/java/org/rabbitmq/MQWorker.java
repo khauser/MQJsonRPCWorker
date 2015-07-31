@@ -1,7 +1,6 @@
 package org.rabbitmq;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import org.rabbitmq.task.MQTask;
@@ -18,7 +17,7 @@ import com.thetransactioncompany.jsonrpc2.JSONRPC2Request;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Response;
 import com.thetransactioncompany.jsonrpc2.util.NamedParamsRetriever;
 
-public abstract class MQWorker implements Runnable {
+public abstract class MQWorker extends MQEndPoint implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(MQWorker.class);
 
     private int workerId;
@@ -28,6 +27,7 @@ public abstract class MQWorker implements Runnable {
     private String queue;
 
     public MQWorker(Channel channel, String queue) {
+        super(channel);
         this.channel = channel;
         this.queue = queue;
     }
@@ -115,19 +115,4 @@ public abstract class MQWorker implements Runnable {
 
     public abstract JSONRPC2Response processRequest(JSONRPC2Request request, NamedParamsRetriever np, BasicProperties props, long tag) throws JSONRPC2Error;
 
-    private void sendErrorResponse(JSONRPC2Response errorResponse, BasicProperties props, BasicProperties replyProps, long tag, String correlationId) throws IOException {
-        byte[] responseRaw = null;
-        try {
-            responseRaw = errorResponse.toString().getBytes("UTF-8");
-        }
-        catch (UnsupportedEncodingException uee) {
-            LOG.error(uee.getMessage());
-            errorResponse = new JSONRPC2Response(JSONRPC2Error.INVALID_REQUEST, correlationId);
-            responseRaw = errorResponse.toString().getBytes();
-        }
-        LOG.debug("Worker {}: Sending Error Response: {}", workerId, responseRaw);
-
-        channel.basicPublish( "", props.getReplyTo(), replyProps, responseRaw);
-        channel.basicAck(tag, false);
-    }
 }

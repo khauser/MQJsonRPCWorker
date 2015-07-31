@@ -1,10 +1,8 @@
 package org.rabbitmq;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
-import org.rabbitmq.exception.ErrorCode;
 import org.rabbitmq.exception.JsonConversionException;
 import org.rabbitmq.exception.MQConnectionException;
 import org.rabbitmq.task.MQAsyncTask;
@@ -23,19 +21,20 @@ import com.thetransactioncompany.jsonrpc2.JSONRPC2Request;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Response;
 import com.thetransactioncompany.jsonrpc2.util.NamedParamsRetriever;
 
-public abstract class MQAsyncWorker implements Runnable {
+public abstract class MQAsyncWorker extends MQEndPoint implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(MQAsyncWorker.class);
-
-    private int workerId;
-    private int processed = 1;
 
     private Channel channel;
     private String queue;
+
+    private int workerId;
+    private int processed = 1;
 
     private MQAsyncTask task;
 
     @Autowired
     public MQAsyncWorker(Channel channel, String queue) {
+        super(channel);
         this.channel = channel;
         this.queue = queue;
     }
@@ -70,7 +69,7 @@ public abstract class MQAsyncWorker implements Runnable {
                     Map<String,Object> params = request.getNamedParams();
                     NamedParamsRetriever np = new NamedParamsRetriever(params);
 
-                    initializeRequest(request, np, props, tag);
+                    initializeRequest(request, np);
 
                     String taskJsonString = JsonConverter.getObjectMapper().writeValueAsString(this.getTask());
                     sendResponse(new JSONRPC2Response(taskJsonString, correlationId), props, replyProps, tag, correlationId);
@@ -132,53 +131,14 @@ public abstract class MQAsyncWorker implements Runnable {
         this.processed = processed;
     }
 
-    protected void initializeTask(MQAsyncTask task, MQAsyncWorker mqWorker, long tag, BasicProperties props, Object id) {
+    protected void initializeTask(MQAsyncTask task, MQAsyncWorker mqWorker, Object id) {
         task.setWorker(mqWorker);
-        task.setTag(tag);
-        task.setProps(props);
         task.setRequestId(id);
-        task.setChannel(this.channel);
     }
 
-    public abstract void initializeRequest(JSONRPC2Request request, NamedParamsRetriever np, BasicProperties props
-            , long tag) throws JSONRPC2Error, JsonConversionException;
+    public abstract void initializeRequest(JSONRPC2Request request, NamedParamsRetriever np) throws JSONRPC2Error, JsonConversionException;
 
     public abstract void processRequest();
 
-    private void sendErrorResponse(JSONRPC2Response errorResponse, BasicProperties props, BasicProperties replyProps, long tag, String correlationId) throws IOException {
-        byte[] responseRaw = null;
-        try {
-            responseRaw = errorResponse.toString().getBytes("UTF-8");
-        }
-        catch (UnsupportedEncodingException uee) {
-            LOG.error(uee.getMessage());
-            errorResponse = new JSONRPC2Response(JSONRPC2Error.INVALID_REQUEST, correlationId);
-            responseRaw = errorResponse.toString().getBytes();
-        }
-        LOG.debug("Worker {}: Sending Error Response: {}", workerId, responseRaw);
-
-        channel.basicPublish( "", props.getReplyTo(), replyProps, responseRaw);
-        channel.basicAck(tag, false);
-    }
-
-    public void sendResponse(JSONRPC2Response responseObject, BasicProperties props, BasicProperties replyProps, long tag, String correlationId) throws MQConnectionException {
-        byte[] response;
-        try {
-            response = responseObject.toString().getBytes("UTF-8");
-        }
-        catch (UnsupportedEncodingException uee) {
-            throw new RuntimeException(uee);
-        }
-
-        try {
-            LOG.debug("Sending rpc rabbitmq response to '{}'", props.getReplyTo());
-
-            channel.basicPublish( "", props.getReplyTo(), replyProps, response);
-            channel.basicAck(tag, false);
-            this.setProcessed(this.getProcessed() + 1);
-        } catch (IOException e) {
-            throw new MQConnectionException(ErrorCode.MQ_IO_EXCEPTION, e);
-        }
-    }
 }
 

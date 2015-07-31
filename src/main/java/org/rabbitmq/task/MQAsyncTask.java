@@ -7,8 +7,6 @@ import org.rabbitmq.MQAsyncWorker;
 import org.rabbitmq.exception.JsonConversionException;
 import org.rabbitmq.utility.Link;
 
-import com.rabbitmq.client.AMQP.BasicProperties;
-import com.rabbitmq.client.Channel;
 import com.thetransactioncompany.jsonrpc2.JSONRPC2Error;
 import com.thetransactioncompany.jsonrpc2.util.NamedParamsRetriever;
 
@@ -24,9 +22,6 @@ public abstract class MQAsyncTask implements Runnable {
     }
     private TaskStatusEnum status;
 
-    private long tag;
-    private Channel channel;
-    private BasicProperties props;
     private MQAsyncWorker worker;
     private Object requestId;
 
@@ -41,7 +36,6 @@ public abstract class MQAsyncTask implements Runnable {
     public void setId(String id) {
         this.id = id;
     }
-
     public String getId() {
         return this.id;
     }
@@ -49,7 +43,6 @@ public abstract class MQAsyncTask implements Runnable {
     public final Link getLink() {
         return link;
     }
-
     public final void setLink(Link link) {
         this.link = link;
     }
@@ -62,34 +55,9 @@ public abstract class MQAsyncTask implements Runnable {
         this.type = type;
     }
 
-    public long getTag() {
-        return tag;
-    }
-
-    public void setTag(long tag) {
-        this.tag = tag;
-    }
-
-    public Channel getChannel() {
-        return channel;
-    }
-
-    public void setChannel(Channel channel) {
-        this.channel = channel;
-    }
-
-    public BasicProperties getProps() {
-        return props;
-    }
-
-    public void setProps(BasicProperties props) {
-        this.props = props;
-    }
-
     public MQAsyncWorker getWorker() {
         return worker;
     }
-
     public void setWorker(MQAsyncWorker worker) {
         this.worker = worker;
     }
@@ -97,7 +65,6 @@ public abstract class MQAsyncTask implements Runnable {
     public Object getRequestId() {
         return requestId;
     }
-
     public void setRequestId(Object requestId) {
         this.requestId = requestId;
     }
@@ -105,7 +72,6 @@ public abstract class MQAsyncTask implements Runnable {
     public DateTime getCreatedAt() {
         return createdAt;
     }
-
     public void setCreatedAt(DateTime createdAt) {
         this.createdAt = createdAt;
     }
@@ -113,7 +79,6 @@ public abstract class MQAsyncTask implements Runnable {
     public DateTime getStartedAt() {
         return startedAt;
     }
-
     public void setStartedAt(DateTime startedAt) {
         this.startedAt = startedAt;
     }
@@ -121,7 +86,6 @@ public abstract class MQAsyncTask implements Runnable {
     public DateTime getCompletedAt() {
         return completedAt;
     }
-
     public void setCompletedAt(DateTime completedAt) {
         this.completedAt = completedAt;
     }
@@ -129,7 +93,6 @@ public abstract class MQAsyncTask implements Runnable {
     public TaskStatusEnum getStatus() {
         return status;
     }
-
     public void setStatus(TaskStatusEnum status) {
         this.status = status;
     }
@@ -137,7 +100,6 @@ public abstract class MQAsyncTask implements Runnable {
     public void setError(Throwable e) {
         this.error = e.getStackTrace();
     }
-
     public StackTraceElement[] getError() {
         return this.error;
     }
@@ -150,6 +112,7 @@ public abstract class MQAsyncTask implements Runnable {
     public void run() {
         try {
             this.executeTask();
+            worker.setProcessed(worker.getProcessed() + 1);
         }
         catch (Exception e) {
             //TODO check out error handling
