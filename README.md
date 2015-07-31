@@ -21,4 +21,5 @@ This project implements two rabbitmq approaches in an abstract manner to use it 
 * the code under src/test/java is a sample implementation of this library and is used by the test
 
 ## Upcoming
+* provide a task queue to query whether task is finished or not and also to get a result
 * setup a maven repository to upload the library
